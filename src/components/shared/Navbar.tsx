@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface NavbarProps {
     isLoggedIn?: boolean;
@@ -66,6 +67,7 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
 
                     {/* CTA / Auth Buttons */}
                     <div className="hidden md:flex items-center gap-4">
+                        <ThemeToggle />
                         {isLoggedIn ? (
                             <Link
                                 href={getDashboardPath(userRole)}

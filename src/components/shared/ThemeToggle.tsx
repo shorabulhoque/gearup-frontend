@@ -1,46 +1,65 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-    const [theme, setTheme] = useState<'light' | 'dark' | null>(null)
+    const [mounted, setMounted] = useState(false);
+    const [theme, setTheme] = useState<"light" | "dark">("light");
 
-    // On mount, check which class the layout script actually applied
     useEffect(() => {
-        const isDark = document.documentElement.classList.contains('dark')
-        setTheme(isDark ? 'dark' : 'light')
-    }, [])
+        const isDark = document.documentElement.classList.contains("dark");
+        setTheme(isDark ? "dark" : "light");
+        setMounted(true);
+    }, []);
 
     const toggleTheme = () => {
-        if (!theme) return
+        const nextTheme = theme === "dark" ? "light" : "dark"
 
-        const nextTheme = theme === 'dark' ? 'light' : 'dark'
-
-        if (nextTheme === 'dark') {
-            document.documentElement.classList.add('dark')
-            localStorage.setItem('theme', 'dark')
+        if (nextTheme === "dark") {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark")
         } else {
-            document.documentElement.classList.remove('dark')
-            localStorage.setItem('theme', 'light')
-        }
+            document.documentElement.classList.remove("dark")
+            localStorage.setItem("theme", "light")
+        };
 
-        setTheme(nextTheme)
-    }
+        setTheme(nextTheme);
+    };
 
-    // Prevent hydration mismatch layout shifts
-    if (!theme) {
-        return <div className="w-10 h-10 bg-gray-200 rounded animate-pulse" />
+    // Placeholder To prevent Hydration Mismatch and Layout Shift
+    if (!mounted) {
+        return <div className="w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
     }
 
     return (
         <button
             onClick={toggleTheme}
-            className="px-4 py-2 font-medium border rounded-md transition-colors 
-                 bg-gray-100 border-gray-300 text-black 
-                 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white"
+            type="button"
+            aria-label="Toggle Theme"
+            className="p-2 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-            Switch to {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            {theme === "dark" ? (
+                /* Sun Icon for Dark Mode (click to switch to Light) */
+                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                </svg>
+            ) : (
+                /* Moon Icon for Light Mode (click to switch to Dark) */
+                <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
+                </svg>
+            )}
         </button>
     )
 }
