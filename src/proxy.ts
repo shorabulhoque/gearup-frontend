@@ -1,8 +1,9 @@
-// src/proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtUtils } from "@/utils/jwt";
 
-// রোল অনুযায়ী ড্যাশবোর্ড রাউট ম্যাপিং
+export const runtime = "nodejs";
+
 const ROLE_DASHBOARDS: Record<string, string> = {
     ADMIN: "/dashboard/admin",
     PROVIDER: "/dashboard/provider",
@@ -12,47 +13,40 @@ const ROLE_DASHBOARDS: Record<string, string> = {
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // ১. কুকি থেকে টোকেন এবং রোল রিড করা
     const accessToken = request.cookies.get("accessToken")?.value;
-    const userRole = request.cookies.get("userRole")?.value;
+    const decoded = accessToken ? jwtUtils.decodeToken(accessToken) : null;
+    const userRole = decoded?.role;
 
-    // রাউট গ্রুপ সনাক্তকরণ
     const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
     const isDashboardRoute = pathname.startsWith("/dashboard");
 
-    // ---------------------------------------------------------------
-    // কেস ১: লগইন থাকা অবস্থায় Auth পেজে (/login, /register) ঢুকতে চাইলে
-    // ---------------------------------------------------------------
-    if (isAuthRoute && accessToken) {
-        const targetDashboard = (userRole && ROLE_DASHBOARDS[userRole]) || "/dashboard/customer";
+    if (isAuthRoute && accessToken && userRole) {
+        const targetDashboard = ROLE_DASHBOARDS[userRole] || "/dashboard/customer";
         return NextResponse.redirect(new URL(targetDashboard, request.url));
-    }
+    };
 
-    // ---------------------------------------------------------------
-    // কেস ২: লগইন না করে প্রোটেক্টেড ড্যাশবোর্ডে ঢুকতে চাইলে
-    // ---------------------------------------------------------------
     if (isDashboardRoute && !accessToken) {
         const loginUrl = new URL("/login", request.url);
         loginUrl.searchParams.set("redirectTo", pathname);
         return NextResponse.redirect(loginUrl);
-    }
+    };
 
     if (isDashboardRoute && accessToken && userRole) {
         if (pathname.startsWith("/dashboard/admin") && userRole !== "ADMIN") {
             return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        }
+        };
 
         if (pathname.startsWith("/dashboard/provider") && userRole !== "PROVIDER") {
             return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        }
+        };
 
         if (pathname.startsWith("/dashboard/customer") && userRole !== "CUSTOMER") {
             return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        }
-    }
+        };
+    };
 
     return NextResponse.next();
-}
+};
 
 export const config = {
     matcher: [
