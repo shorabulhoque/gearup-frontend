@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtUtils } from "@/utils/jwt";
 
-export const runtime = "nodejs";
-
 const ROLE_DASHBOARDS: Record<string, string> = {
     ADMIN: "/dashboard/admin",
     PROVIDER: "/dashboard/provider",

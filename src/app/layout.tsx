@@ -28,7 +28,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
       </head>
-      <body>{children}</body>
+      <body className="antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen">
+        {children}
+      </body>
     </html>
   );
 };
