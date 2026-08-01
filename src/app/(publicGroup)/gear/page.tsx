@@ -2,21 +2,25 @@ import { getAllGears } from "@/services/gear/gear.actions";
 import { getAllCategories } from "@/services/category/category.actions";
 import GearCard from "../_components/GearCard";
 import GearFilterSidebar from "../_components/GearFilterSidebar";
+import Pagination from "../_components/Pagination";
 import { Suspense } from "react";
 import GearSkeleton from "../_components/GearSkeleton";
 import { IGearQueryParams } from "@/types/gear.types";
 
 interface GearPageProps {
     searchParams: Promise<IGearQueryParams>;
-};
+}
 
 export default async function GearPage({ searchParams }: GearPageProps) {
     const resolvedSearchParams = await searchParams;
 
-    const [gearItems, categories] = await Promise.all([
+    const [gearsResponse, categories] = await Promise.all([
         getAllGears(resolvedSearchParams),
         getAllCategories(),
     ]);
+
+    const gearItems = gearsResponse.data || [];
+    const meta = gearsResponse.meta;
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
@@ -49,10 +53,13 @@ export default async function GearPage({ searchParams }: GearPageProps) {
                                     <GearCard key={gear.id} gear={gear} />
                                 ))}
                             </div>
+
+                            {/* Pagination Controls */}
+                            {meta && <Pagination meta={meta} />}
                         </Suspense>
                     )}
                 </div>
             </div>
         </div>
     );
-};
+}

@@ -2,7 +2,7 @@ import { IGearApiResponse, IGearItem, IGearQueryParams } from "@/types/gear.type
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
-export async function getAllGears(queryParams?: IGearQueryParams): Promise<IGearItem[]> {
+export async function getAllGears(queryParams?: IGearQueryParams): Promise<IGearApiResponse> {
     try {
         const params = new URLSearchParams();
 
@@ -27,9 +27,15 @@ export async function getAllGears(queryParams?: IGearQueryParams): Promise<IGear
 
         const result: IGearApiResponse = await res.json();
 
-        return result.data || [];
+        return result;
     } catch (error) {
         console.error("Error fetching gears:", error);
-        return [];
+        return {
+            success: false,
+            statusCode: 500,
+            message: "Error fetching gears",
+            data: [],
+            meta: { page: 1, limit: 10, total: 0 }
+        };
     };
 };
