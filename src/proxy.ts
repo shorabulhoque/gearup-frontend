@@ -10,7 +10,7 @@ const ROLE_DASHBOARDS: Record<string, string> = {
 
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-
+    console.log(pathname);
     const accessToken = request.cookies.get("accessToken")?.value;
     const decoded = accessToken ? jwtUtils.decodeToken(accessToken) : null;
     const userRole = decoded?.role;
