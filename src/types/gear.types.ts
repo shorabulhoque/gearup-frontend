@@ -1,10 +1,11 @@
-export interface Category {
+export interface ICategory {
     id: string;
     name: string;
-    description: string;
-    createdAt: string;
-    updatedAt: string;
-}
+};
+
+export interface IReviewRating {
+    rating: number;
+};
 
 export interface IGearItem {
     id: string;
@@ -15,21 +16,29 @@ export interface IGearItem {
     stock: number;
     isAvailable: boolean;
     images: string[];
-    categoryId: string;
-    providerId: string;
     createdAt: string;
-    updatedAt: string;
-    category: Category;
-}
+    category: ICategory;
+    reviews: IReviewRating[];
+};
 
-export interface IApiResponse<T> {
+export interface IGearApiResponse {
     success: boolean;
     statusCode: number;
     message: string;
-    data: T;
+    data: IGearItem[];
     meta?: {
         page: number;
         limit: number;
         total: number;
     };
+};
+
+export interface IGearQueryParams {
+    searchTerm?: string;
+    categoryId?: string;
+    minPrice?: string | number;
+    maxPrice?: string | number;
+    sort?: string;
+    page?: string | number;
+    limit?: string | number;
 }

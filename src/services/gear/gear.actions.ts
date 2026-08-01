@@ -1,10 +1,23 @@
-import { IApiResponse, IGearItem } from "@/types/gear.types";
+import { IGearApiResponse, IGearItem, IGearQueryParams } from "@/types/gear.types";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
-export async function getAllGears(): Promise<IGearItem[]> {
+export async function getAllGears(queryParams?: IGearQueryParams): Promise<IGearItem[]> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/gears`, {
+        const params = new URLSearchParams();
+
+        if (queryParams?.searchTerm) params.append("searchTerm", queryParams.searchTerm);
+        if (queryParams?.categoryId) params.append("categoryId", queryParams.categoryId);
+        if (queryParams?.minPrice) params.append("minPrice", queryParams.minPrice.toString());
+        if (queryParams?.maxPrice) params.append("maxPrice", queryParams.maxPrice.toString());
+        if (queryParams?.sort) params.append("sort", queryParams.sort);
+        if (queryParams?.page) params.append("page", queryParams.page.toString());
+        if (queryParams?.limit) params.append("limit", queryParams.limit.toString());
+
+        const queryString = params.toString();
+        const url = `${BACKEND_URL}/api/gears${queryString ? `?${queryString}` : ""}`;
+
+        const res = await fetch(url, {
             cache: "no-store",
         });
 
@@ -12,11 +25,11 @@ export async function getAllGears(): Promise<IGearItem[]> {
             throw new Error(`Failed to fetch gears: ${res.statusText}`);
         };
 
-        const result: IApiResponse<IGearItem[]> = await res.json();
-        console.log(res.json(), "data from getAllGears");
+        const result: IGearApiResponse = await res.json();
+
         return result.data || [];
     } catch (error) {
-        // console.error("Error fetching gears:", error);
+        console.error("Error fetching gears:", error);
         return [];
     };
 };
