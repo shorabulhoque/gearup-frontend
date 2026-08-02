@@ -62,7 +62,6 @@ export async function loginAction(
     };
 };
 
-
 export async function registerAction(
     prevState: IRegisterResponse | null,
     formData: FormData
@@ -107,4 +106,12 @@ export async function registerAction(
             message: error.message || "Network connection error",
         };
     };
+};
+
+
+export async function logoutUserAction() {
+    const cookieStore = await cookies();
+    cookieStore.delete("accessToken");
+    cookieStore.delete("userRole");
+    redirect("/login");
 };

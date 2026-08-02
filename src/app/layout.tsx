@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getCurrentUser } from "@/services/user/user.actions";
 
 
 export const metadata: Metadata = {
@@ -20,9 +21,11 @@ const themeInitializerScript = `
   })()
 `;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

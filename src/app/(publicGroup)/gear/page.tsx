@@ -9,7 +9,7 @@ import { IGearQueryParams } from "@/types/gear.types";
 
 interface GearPageProps {
     searchParams: Promise<IGearQueryParams>;
-}
+};
 
 export default async function GearPage({ searchParams }: GearPageProps) {
     const resolvedSearchParams = await searchParams;
@@ -62,4 +62,4 @@ export default async function GearPage({ searchParams }: GearPageProps) {
             </div>
         </div>
     );
-}
+};

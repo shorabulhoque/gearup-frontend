@@ -1,16 +1,19 @@
+// src/components/shared/Navbar.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
+import UserDropdown from "./UserDropdown";
+import { IUserData } from "@/types/user.types";
+import { logoutUserAction } from "@/services/auth/auth.actions";
 
 interface NavbarProps {
-    isLoggedIn?: boolean;
-    userRole?: string;
+    user?: IUserData | null;
 }
 
-export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: NavbarProps) {
+export default function Navbar({ user }: NavbarProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
 
@@ -22,7 +25,7 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
         { name: "Contact", href: "/contact" },
     ];
 
-    const getDashboardPath = (role: string) => {
+    const getDashboardPath = (role?: string) => {
         switch (role) {
             case "ADMIN":
                 return "/dashboard/admin";
@@ -65,16 +68,11 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
                         })}
                     </nav>
 
-                    {/* CTA / Auth Buttons */}
+                    {/* CTA / Auth Area (Desktop) */}
                     <div className="hidden md:flex items-center gap-4">
                         <ThemeToggle />
-                        {isLoggedIn ? (
-                            <Link
-                                href={getDashboardPath(userRole)}
-                                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all dark:bg-blue-500 dark:hover:bg-blue-600"
-                            >
-                                Go to Dashboard
-                            </Link>
+                        {user ? (
+                            <UserDropdown user={user} />
                         ) : (
                             <>
                                 <Link
@@ -93,8 +91,9 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
                         )}
                     </div>
 
-                    {/* Mobile Hamburger Button */}
-                    <div className="flex md:hidden items-center">
+                    {/* Mobile Controls (Theme Toggle & Hamburger) */}
+                    <div className="flex md:hidden items-center gap-2">
+                        <ThemeToggle />
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             type="button"
@@ -104,21 +103,11 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
                         >
                             <span className="sr-only">Open main menu</span>
                             {isMobileMenuOpen ? (
-                                <svg
-                                    className="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
+                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             ) : (
-                                <svg
-                                    className="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
+                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             )}
@@ -149,17 +138,43 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
                         })}
                     </div>
 
-                    <div className="pt-2 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
-                        {isLoggedIn ? (
-                            <Link
-                                href={getDashboardPath(userRole)}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all"
-                            >
-                                Go to Dashboard
-                            </Link>
+                    <div className="pt-3 border-t border-gray-100 dark:border-gray-800">
+                        {user ? (
+                            <div className="space-y-2">
+                                <div className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                                    </div>
+                                    <span className="text-[10px] font-bold text-blue-700 bg-blue-50 dark:bg-blue-950 dark:text-blue-300 px-2 py-0.5 rounded-full uppercase">
+                                        {user.role}
+                                    </span>
+                                </div>
+                                <Link
+                                    href={getDashboardPath(user.role)}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all"
+                                >
+                                    Dashboard
+                                </Link>
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block w-full text-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                >
+                                    Profile
+                                </Link>
+                                <form action={logoutUserAction}>
+                                    <button
+                                        type="submit"
+                                        className="w-full text-center px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                                    >
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
                         ) : (
-                            <>
+                            <div className="flex flex-col gap-2">
                                 <Link
                                     href="/login"
                                     onClick={() => setIsMobileMenuOpen(false)}
@@ -174,7 +189,7 @@ export default function Navbar({ isLoggedIn = false, userRole = "CUSTOMER" }: Na
                                 >
                                     Sign up
                                 </Link>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>
