@@ -39,3 +39,19 @@ export async function getAllGears(queryParams?: IGearQueryParams): Promise<IGear
         };
     };
 };
+
+export async function getGearById(id: string): Promise<IGearItem | null> {
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/gears/${id}`, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) return null;
+
+        const result = await res.json();
+        return result.data || null;
+    } catch (error) {
+        console.error("Error fetching gear details:", error);
+        return null;
+    }
+}
