@@ -6,21 +6,20 @@ import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
-export interface IUser {
-    id: string;
-    name: string;
-    email: string;
-    role: "ADMIN" | "CUSTOMER" | "PROVIDER";
-    status: "ACTIVE" | "SUSPENDED";
-    createdAt: string;
-}
-
-export async function getAllUsers() {
+export async function getAllUsers(queryParams?: { searchTerm?: string; page?: number; limit?: number }) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get("accessToken")?.value;
 
-        const res = await fetch(`${BACKEND_URL}/api/admin/users`, {
+        const params = new URLSearchParams();
+        if (queryParams?.searchTerm) params.append("searchTerm", queryParams.searchTerm);
+        if (queryParams?.page) params.append("page", queryParams.page.toString());
+        if (queryParams?.limit) params.append("limit", queryParams.limit.toString());
+
+        const queryString = params.toString();
+        const url = `${BACKEND_URL}/api/admin/users${queryString ? `?${queryString}` : ""}`;
+
+        const res = await fetch(url, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: token ? `Bearer ${token}` : "",
@@ -35,6 +34,7 @@ export async function getAllUsers() {
                 success: false,
                 message: data.message || "Failed to fetch users.",
                 data: [],
+                meta: { page: 1, limit: 10, total: 0, totalPage: 1 }
             };
         }
 
@@ -44,6 +44,7 @@ export async function getAllUsers() {
             success: false,
             message: error?.message || "Network error while fetching users.",
             data: [],
+            meta: { page: 1, limit: 10, total: 0, totalPage: 1 }
         };
     }
 }
