@@ -4,7 +4,7 @@ import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { registerAction } from "@/services/auth/auth.actions";
 import { IRegisterResponse } from "@/types/auth.types";
-import Link from "next/link";
+import { toast } from "sonner";
 
 const initialState: IRegisterResponse = {
     success: false,
@@ -16,108 +16,110 @@ export default function RegisterForm() {
     const [state, action, isPending] = useActionState(registerAction, initialState);
 
     useEffect(() => {
-        if (state?.success) {
+        if (!state) return;
+
+        if (state.success) {
+            toast.success(state.message || "Account created successfully!");
             const timer = setTimeout(() => {
                 router.push("/login");
             }, 1500);
             return () => clearTimeout(timer);
+        } else if (!state.success && state.message) {
+            toast.error(state.message);
         }
-    }, [state?.success, router]);
+    }, [state, router]);
 
     return (
-        <div className="w-full max-w-md mx-auto p-6 bg-white rounded-xl shadow-md border border-gray-100">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-                Create an Account
-            </h2>
-
-            {state?.message && (
+        <form action={action} className="space-y-4">
+            {/* Inline Error/Success Banner */}
+            {state && state.message && (
                 <div
-                    className={`p-3 mb-4 text-sm rounded-lg border ${state.success
-                        ? "bg-green-50 text-green-700 border-green-200"
-                        : "bg-red-50 text-red-700 border-red-200"
+                    className={`p-3.5 rounded-xl text-xs sm:text-sm border font-medium ${state.success
+                            ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
+                            : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20"
                         }`}
                 >
                     {state.message}
                 </div>
             )}
 
-            <form action={action} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name
-                    </label>
-                    <input
-                        type="text"
-                        name="name"
-                        required
-                        placeholder="John Doe"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                </div>
+            {/* Full Name Field */}
+            <div className="space-y-1.5">
+                <label className="block text-xs font-semibold opacity-90">
+                    Full Name
+                </label>
+                <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="John Doe"
+                    className="w-full px-4 py-2.5 rounded-xl border border-card-border bg-background text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm placeholder:opacity-50"
+                />
+            </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email Address
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        placeholder="example@mail.com"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                </div>
+            {/* Email Address Field */}
+            <div className="space-y-1.5">
+                <label className="block text-xs font-semibold opacity-90">
+                    Email Address
+                </label>
+                <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="example@mail.com"
+                    className="w-full px-4 py-2.5 rounded-xl border border-card-border bg-background text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm placeholder:opacity-50"
+                />
+            </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Password
-                    </label>
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        minLength={6}
-                        placeholder="••••••••"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                </div>
+            {/* Password Field */}
+            <div className="space-y-1.5">
+                <label className="block text-xs font-semibold opacity-90">
+                    Password
+                </label>
+                <input
+                    type="password"
+                    name="password"
+                    required
+                    minLength={6}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-2.5 rounded-xl border border-card-border bg-background text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm placeholder:opacity-50"
+                />
+            </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Select Role
-                    </label>
-                    <select
-                        name="role"
-                        defaultValue="CUSTOMER"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white"
-                    >
-                        <option value="CUSTOMER">Customer</option>
-                        <option value="PROVIDER">Provider</option>
-                    </select>
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={isPending}
-                    className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+            {/* Role Selection Field */}
+            <div className="space-y-1.5">
+                <label className="block text-xs font-semibold opacity-90">
+                    Select Role
+                </label>
+                <select
+                    name="role"
+                    defaultValue="CUSTOMER"
+                    className="w-full px-4 py-2.5 rounded-xl border border-card-border bg-background text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm cursor-pointer"
                 >
-                    {isPending ? (
-                        <>
-                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                            Creating account...
-                        </>
-                    ) : (
-                        "Register"
-                    )}
-                </button>
-            </form>
+                    <option value="CUSTOMER" className="bg-card-bg text-foreground">
+                        Customer (Rent Gear)
+                    </option>
+                    <option value="PROVIDER" className="bg-card-bg text-foreground">
+                        Provider (Host Gear)
+                    </option>
+                </select>
+            </div>
 
-            <p className="mt-4 text-center text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link href="/login" className="text-blue-600 font-medium hover:underline">
-                    Log in
-                </Link>
-            </p>
-        </div>
+            {/* Submit Button */}
+            <button
+                type="submit"
+                disabled={isPending}
+                className="w-full py-3 px-4 rounded-xl font-bold text-white bg-primary hover:bg-primary-hover transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2 flex justify-center items-center gap-2"
+            >
+                {isPending ? (
+                    <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        Creating account...
+                    </>
+                ) : (
+                    "Register"
+                )}
+            </button>
+        </form>
     );
-};
+}

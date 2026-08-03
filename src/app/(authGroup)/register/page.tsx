@@ -1,10 +1,33 @@
+import Link from "next/link";
 import RegisterForm from "../_components/registerForm";
 
 
 export default function RegisterPage() {
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="space-y-6">
+            {/* Header Section */}
+            <div className="space-y-2 text-center">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                    Create an Account
+                </h1>
+                <p className="text-xs sm:text-sm opacity-70">
+                    Join us to rent or host your outdoor gear
+                </p>
+            </div>
+
+            {/* Client Form Component */}
             <RegisterForm />
-        </main>
+
+            {/* Footer Links */}
+            <p className="text-center text-xs sm:text-sm opacity-80 pt-2">
+                Already have an account?{" "}
+                <Link
+                    href="/login"
+                    className="text-primary font-bold hover:underline ml-1"
+                >
+                    Log in
+                </Link>
+            </p>
+        </div>
     );
-};
+}
