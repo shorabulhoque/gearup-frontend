@@ -21,7 +21,7 @@ export async function createRentalOrder(payload: CreateRentalPayload) {
 
         if (!token) {
             return { success: false, message: "Unauthorized", status: 401 };
-        }
+        };
 
         const res = await fetch(`${BACKEND_URL}/api/rentals`, {
             method: "POST",
@@ -40,7 +40,7 @@ export async function createRentalOrder(payload: CreateRentalPayload) {
                 message: result.message || "Failed to place rental order",
                 status: res.status,
             };
-        }
+        };
 
         return {
             success: true,
@@ -52,5 +52,29 @@ export async function createRentalOrder(payload: CreateRentalPayload) {
             success: false,
             message: error?.message || "Something went wrong",
         };
-    }
-}
+    };
+};
+
+export async function getMyRentals() {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get("accessToken")?.value;
+
+        if (!token) return [];
+
+        const res = await fetch(`${BACKEND_URL}/api/rentals/my-rentals`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!res.ok) return [];
+
+        const result = await res.json();
+        return result.data || [];
+    } catch (error) {
+        console.error("Error fetching my rentals:", error);
+        return [];
+    };
+};

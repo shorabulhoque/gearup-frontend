@@ -9,7 +9,6 @@ export async function getCurrentUser(): Promise<IUserData | null> {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get("accessToken")?.value;
-        console.log(token, "token");
         if (!token) return null;
 
         const res = await fetch(`${BACKEND_URL}/api/users/me`, {
