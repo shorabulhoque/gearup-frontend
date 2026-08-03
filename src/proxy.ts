@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtUtils } from "@/utils/jwt";
 
-// 1. Define sub-route access rules for each role
 const PROVIDER_ROUTES = [
     "/dashboard/manage-gears",
     "/dashboard/create-gear",
@@ -22,7 +21,7 @@ export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const accessToken = request.cookies.get("accessToken")?.value;
     const decoded = accessToken ? jwtUtils.decodeToken(accessToken) : null;
-    const userRole = decoded?.role; // e.g. "CUSTOMER", "PROVIDER", "ADMIN"
+    const userRole = decoded?.role;
 
     const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
     const isDashboardRoute = pathname.startsWith("/dashboard");

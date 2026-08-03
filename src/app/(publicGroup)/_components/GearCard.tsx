@@ -27,8 +27,8 @@ export default function GearCard({ gear }: GearCardProps) {
                     />
                     <span
                         className={`absolute top-2.5 right-2.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${gear.isAvailable && gear.stock > 0
-                                ? "bg-success/10 text-success border-success/20"
-                                : "bg-danger/10 text-danger border-danger/20"
+                            ? "bg-success/10 text-success border-success/20"
+                            : "bg-danger/10 text-danger border-danger/20"
                             }`}
                     >
                         {gear.isAvailable && gear.stock > 0 ? "Available" : "Out of Stock"}
@@ -64,7 +64,7 @@ export default function GearCard({ gear }: GearCardProps) {
                 </div>
 
                 <Link
-                    href={`/gear/${gear.id}`}
+                    href={`/gears/${gear.id}`}
                     className="px-4 py-2 bg-primary hover:bg-primary-hover text-text-inverse text-sm font-semibold rounded-xl transition-colors shadow-sm"
                 >
                     View Details

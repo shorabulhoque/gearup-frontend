@@ -22,7 +22,7 @@ export default function Pagination({ meta }: PaginationProps) {
     const handlePageChange = (newPage: number) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("page", newPage.toString());
-        router.push(`/gear?${params.toString()}`);
+        router.push(`/gears?${params.toString()}`);
     };
 
     return (

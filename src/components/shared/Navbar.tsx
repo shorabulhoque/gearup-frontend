@@ -18,7 +18,7 @@ export default function Navbar({ user }: NavbarProps) {
 
     const navLinks = [
         { name: "Home", href: "/" },
-        { name: "Gears", href: "/gear" },
+        { name: "Gears", href: "/gears" },
         { name: "About Us", href: "/about" },
         { name: "FAQ", href: "/faq" },
         { name: "Contact", href: "/contact" },
@@ -46,8 +46,8 @@ export default function Navbar({ user }: NavbarProps) {
                                     key={link.href}
                                     href={link.href}
                                     className={`text-sm font-medium transition-colors ${isActive
-                                            ? "text-primary font-bold"
-                                            : "text-text-muted hover:text-foreground"
+                                        ? "text-primary font-bold"
+                                        : "text-text-muted hover:text-foreground"
                                         }`}
                                 >
                                     {link.name}
@@ -116,8 +116,8 @@ export default function Navbar({ user }: NavbarProps) {
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className={`px-3 py-2 rounded-lg text-base font-medium transition-colors ${isActive
-                                            ? "bg-primary/10 text-primary font-bold"
-                                            : "text-foreground hover:bg-card-bg"
+                                        ? "bg-primary/10 text-primary font-bold"
+                                        : "text-foreground hover:bg-card-bg"
                                         }`}
                                 >
                                     {link.name}

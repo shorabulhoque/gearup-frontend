@@ -4,11 +4,14 @@ import { cookies } from "next/headers";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
 
+export async function getAccessToken(): Promise<string | null> {
+    const cookieStore = await cookies();
+    return cookieStore.get("accessToken")?.value || null;
+}
 
 export async function getCurrentUser(): Promise<IUserData | null> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get("accessToken")?.value;
+        const token = await getAccessToken();
         if (!token) return null;
 
         const res = await fetch(`${BACKEND_URL}/api/users/me`, {
@@ -24,5 +27,5 @@ export async function getCurrentUser(): Promise<IUserData | null> {
     } catch (error) {
         console.error("Error fetching current user:", error);
         return null;
-    };
-};
+    }
+}
