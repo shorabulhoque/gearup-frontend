@@ -5,7 +5,7 @@ import { jwtUtils } from "@/utils/jwt";
 // 1. Define sub-route access rules for each role
 const PROVIDER_ROUTES = [
     "/dashboard/manage-gears",
-    "/dashboard/create-gears",
+    "/dashboard/create-gear",
     "/dashboard/provider-rentals",
 ];
 

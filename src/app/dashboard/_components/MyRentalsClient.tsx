@@ -36,49 +36,47 @@ interface MyRentalsClientProps {
 export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
     const [paymentLoadingId, setPaymentLoadingId] = useState<string | null>(null);
 
-    // Create a payment session and redirect to Stripe
     const handlePayment = async (rentalOrderId: string) => {
         setPaymentLoadingId(rentalOrderId);
         const res = await createPaymentSession(rentalOrderId);
         setPaymentLoadingId(null);
 
         if (res.success && res.data?.paymentUrl) {
-            window.location.href = res.data.paymentUrl;
+            window.location.assign(res.data.paymentUrl);
         } else {
             alert(res.message || "Could not initiate payment session.");
         }
     };
 
-    // Setting badge color based on order status
     const getStatusBadge = (status: RentalOrder["status"]) => {
         switch (status) {
             case "CONFIRMED":
-                return "bg-blue-100 text-blue-800 border-blue-200";
+                return "bg-accent/10 text-accent border-accent/20";
             case "PAID":
-                return "bg-green-100 text-green-800 border-green-200";
+                return "bg-success/10 text-success border-success/20";
             case "CANCELLED":
-                return "bg-red-100 text-red-800 border-red-200";
+                return "bg-danger/10 text-danger border-danger/20";
             case "PICKED_UP":
-                return "bg-purple-100 text-purple-800 border-purple-200";
+                return "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20";
             case "RETURNED":
-                return "bg-gray-100 text-gray-800 border-gray-200";
+                return "bg-card-bg text-text-muted border-card-border";
             default:
-                return "bg-yellow-100 text-yellow-800 border-yellow-200";
+                return "bg-warning/10 text-warning border-warning/20";
         }
     };
 
     return (
         <div className="max-w-5xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">My Rentals</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-6">My Rentals</h1>
 
             {rentals.length === 0 ? (
-                <div className="text-center py-16 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                    <p className="text-gray-500 text-lg font-medium">
-                        You haven't placed any rental orders yet.
+                <div className="text-center py-16 bg-card-bg rounded-2xl border border-card-border shadow-xs">
+                    <p className="text-text-muted text-lg font-medium">
+                        You haven&apos;t placed any rental orders yet.
                     </p>
                     <Link
                         href="/gear"
-                        className="mt-4 inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-xl hover:bg-blue-700 transition shadow-sm"
+                        className="mt-4 inline-block px-6 py-2.5 bg-primary hover:bg-primary-hover text-text-inverse font-semibold text-sm rounded-xl transition shadow-sm shadow-primary/20"
                     >
                         Browse Gears
                     </Link>
@@ -105,32 +103,32 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                     return (
                         <div
                             key={order.id}
-                            className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
+                            className="bg-card-bg border border-card-border rounded-2xl overflow-hidden shadow-xs transition-colors duration-300"
                         >
                             {/* Order Header */}
-                            <div className="bg-gray-100/80 px-6 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-gray-600">
+                            <div className="bg-background px-6 py-4 border-b border-card-border flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-text-muted">
                                 <div className="flex flex-wrap items-center gap-6">
                                     <div>
-                                        <span className="block text-gray-500 uppercase tracking-wider text-[10px] font-semibold">
+                                        <span className="block text-text-muted uppercase tracking-wider text-[10px] font-semibold">
                                             Order Placed
                                         </span>
-                                        <span className="font-semibold text-gray-800">
+                                        <span className="font-semibold text-foreground">
                                             {formattedOrderDate}
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="block text-gray-500 uppercase tracking-wider text-[10px] font-semibold">
+                                        <span className="block text-text-muted uppercase tracking-wider text-[10px] font-semibold">
                                             Total
                                         </span>
-                                        <span className="font-bold text-gray-900">
+                                        <span className="font-bold text-foreground">
                                             CHF {order.totalPrice}
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="block text-gray-500 uppercase tracking-wider text-[10px] font-semibold">
+                                        <span className="block text-text-muted uppercase tracking-wider text-[10px] font-semibold">
                                             Rental Period
                                         </span>
-                                        <span className="font-medium text-gray-800">
+                                        <span className="font-medium text-foreground">
                                             {formattedStartDate} - {formattedEndDate}
                                         </span>
                                     </div>
@@ -145,13 +143,12 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                                         {order.status}
                                     </span>
 
-                                    {/* Payment button (will only be active if confirmed) */}
                                     <button
                                         onClick={() => handlePayment(order.id)}
                                         disabled={!isPayable || paymentLoadingId === order.id}
-                                        className={`px-4 py-2 rounded-lg font-semibold text-xs transition shadow-sm ${isPayable
-                                            ? "bg-amber-400 hover:bg-amber-500 text-gray-900 cursor-pointer"
-                                            : "bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300"
+                                        className={`px-4 py-2 rounded-xl font-semibold text-xs transition shadow-xs ${isPayable
+                                            ? "bg-warning text-text-inverse hover:brightness-110 cursor-pointer"
+                                            : "bg-card-bg text-text-muted cursor-not-allowed border border-card-border"
                                             }`}
                                     >
                                         {paymentLoadingId === order.id
@@ -166,7 +163,7 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                             </div>
 
                             {/* Rental Items Listing */}
-                            <div className="p-6 divide-y divide-gray-100">
+                            <div className="p-6 divide-y divide-card-border">
                                 {order.items.map((item) => {
                                     const itemImage =
                                         item.gearItem?.images && item.gearItem.images.length > 0
@@ -179,7 +176,7 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                                             className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                                         >
                                             <div className="flex items-center space-x-4">
-                                                <div className="relative w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
+                                                <div className="relative w-20 h-20 bg-background rounded-xl overflow-hidden border border-card-border flex-shrink-0">
                                                     <Image
                                                         unoptimized
                                                         src={itemImage}
@@ -189,19 +186,19 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                                                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                                                         {item.gearItem?.brand}
                                                     </span>
-                                                    <h3 className="text-base font-bold text-gray-900 mt-1">
+                                                    <h3 className="text-base font-bold text-foreground mt-1">
                                                         {item.gearItem?.title}
                                                     </h3>
-                                                    <div className="text-xs text-gray-500 mt-1 space-x-3">
+                                                    <div className="text-xs text-text-muted mt-1 space-x-3">
                                                         <span>
-                                                            Qty: <strong>{item.quantity}</strong>
+                                                            Qty: <strong className="text-foreground">{item.quantity}</strong>
                                                         </span>
                                                         <span>
                                                             Price Snapshot:{" "}
-                                                            <strong>CHF {item.priceSnapshot}</strong>
+                                                            <strong className="text-foreground">CHF {item.priceSnapshot}</strong>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -211,7 +208,7 @@ export function MyRentalsClient({ rentals }: MyRentalsClientProps) {
                                             <div className="sm:text-right w-full sm:w-auto">
                                                 <Link
                                                     href={`/gear/${item.gearItem?.id}`}
-                                                    className="inline-block px-4 py-2 border border-gray-300 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition text-center w-full sm:w-auto"
+                                                    className="inline-block px-4 py-2 border border-card-border rounded-xl text-xs font-semibold text-foreground hover:bg-background transition text-center w-full sm:w-auto"
                                                 >
                                                     Rent Again
                                                 </Link>
