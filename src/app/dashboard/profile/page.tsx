@@ -1,11 +1,13 @@
-import React from 'react';
+import { getCurrentUser } from "@/services/user/user.actions";
+import { redirect } from "next/navigation";
+import { ProfileClient } from "../_components/ProfileClient";
 
-const page = () => {
-    return (
-        <div>
+export default async function ProfilePage() {
+    const user = await getCurrentUser();
+    console.log(user);
+    if (!user) {
+        redirect("/login");
+    }
 
-        </div>
-    );
-};
-
-export default page;
+    return <ProfileClient user={user} />;
+}
