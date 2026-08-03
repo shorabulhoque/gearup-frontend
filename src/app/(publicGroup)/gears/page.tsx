@@ -77,4 +77,4 @@ export default async function GearPage({ searchParams }: GearPageProps) {
             </div>
         </div>
     );
-}
+};
