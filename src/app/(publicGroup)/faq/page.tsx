@@ -76,9 +76,9 @@ const faqData: FAQItem[] = [
     },
 ];
 
-const FAQpage = () => {
+const FAQPage = () => {
     const [activeCategory, setActiveCategory] = useState<string>("all");
-    const [openId, setOpenId] = useState<string | null>("1"); // First question open by default
+    const [openId, setOpenId] = useState<string | null>("1");
 
     const filteredFaqs =
         activeCategory === "all"
@@ -90,17 +90,17 @@ const FAQpage = () => {
     };
 
     return (
-        <div className="bg-slate-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+        <div className="bg-background text-foreground min-h-screen py-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto space-y-12">
                 {/* Header Section */}
                 <div className="text-center space-y-4">
-                    <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-widest bg-blue-100 text-blue-700 rounded-full">
+                    <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-widest bg-primary/10 text-primary rounded-full border border-primary/20">
                         Help & Support
                     </span>
-                    <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+                    <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
                         Frequently Asked Questions
                     </h1>
-                    <p className="max-w-xl mx-auto text-slate-500 text-base">
+                    <p className="max-w-xl mx-auto text-text-muted text-base">
                         Have questions about renting gear or becoming a provider? We’ve got answers to help you gear up smoothly.
                     </p>
                 </div>
@@ -118,8 +118,8 @@ const FAQpage = () => {
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
                             className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-200 ${activeCategory === cat.id
-                                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                                    : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                                    ? "bg-primary text-white shadow-md shadow-primary/20"
+                                    : "bg-card-bg text-text-muted hover:text-foreground border border-card-border"
                                 }`}
                         >
                             {cat.label}
@@ -135,17 +135,17 @@ const FAQpage = () => {
                         return (
                             <div
                                 key={faq.id}
-                                className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all duration-200 shadow-sm hover:border-slate-300"
+                                className="bg-card-bg border border-card-border rounded-2xl overflow-hidden transition-all duration-200 shadow-sm hover:border-card-border/80"
                             >
                                 <button
                                     onClick={() => toggleFAQ(faq.id)}
                                     className="w-full text-left p-6 flex items-center justify-between gap-4 focus:outline-none"
                                 >
-                                    <span className="text-base font-bold text-slate-900">
+                                    <span className="text-base font-bold">
                                         {faq.question}
                                     </span>
                                     <span
-                                        className={`w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 transition-transform duration-200 text-slate-600 font-bold ${isOpen ? "rotate-180 bg-blue-50 text-blue-600" : ""
+                                        className={`w-8 h-8 rounded-full bg-background flex items-center justify-center shrink-0 transition-transform duration-200 text-text-muted font-bold ${isOpen ? "rotate-180 bg-primary/10 text-primary" : ""
                                             }`}
                                     >
                                         ↓
@@ -153,7 +153,7 @@ const FAQpage = () => {
                                 </button>
 
                                 {isOpen && (
-                                    <div className="px-6 pb-6 pt-0 text-sm text-slate-600 leading-relaxed border-t border-slate-100/60 mt-2">
+                                    <div className="px-6 pb-6 pt-0 text-sm text-text-muted leading-relaxed border-t border-card-border/60 mt-2">
                                         <p className="pt-3">{faq.answer}</p>
                                     </div>
                                 )}
@@ -163,15 +163,15 @@ const FAQpage = () => {
                 </div>
 
                 {/* Still Have Questions CTA */}
-                <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-center text-white space-y-4 shadow-xl">
+                <div className="bg-card-bg border border-card-border rounded-2xl p-8 text-center text-foreground space-y-4 shadow-xl">
                     <h3 className="text-xl font-bold">Still have unanswered questions?</h3>
-                    <p className="text-blue-200 text-xs sm:text-sm max-w-md mx-auto">
+                    <p className="text-text-muted text-xs sm:text-sm max-w-md mx-auto">
                         Can’t find what you’re looking for? Reach out to our support team and we’ll be happy to assist you.
                     </p>
                     <div className="pt-2">
                         <Link
                             href="/contact"
-                            className="inline-block px-6 py-3 rounded-xl bg-white text-blue-900 font-bold text-xs shadow-md hover:bg-slate-100 transition-colors"
+                            className="inline-block px-6 py-3 rounded-xl bg-primary text-white font-bold text-xs shadow-md hover:bg-primary-hover transition-colors"
                         >
                             Contact Support
                         </Link>
@@ -182,4 +182,4 @@ const FAQpage = () => {
     );
 };
 
-export default FAQpage;
+export default FAQPage;

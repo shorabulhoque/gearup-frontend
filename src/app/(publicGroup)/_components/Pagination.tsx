@@ -26,25 +26,25 @@ export default function Pagination({ meta }: PaginationProps) {
     };
 
     return (
-        <div className="flex items-center justify-center gap-2 mt-8 pt-6 border-t border-gray-200">
+        <div className="flex items-center justify-center gap-2 mt-10 pt-6 border-t border-card-border">
             {/* Previous Button */}
             <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page <= 1}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 text-sm font-semibold rounded-xl border border-card-border bg-card-bg text-foreground hover:bg-background disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
                 Previous
             </button>
 
             {/* Page Numbers */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                     <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`w-8 h-8 text-sm font-medium rounded-lg transition ${pageNum === page
-                                ? "bg-emerald-600 text-white"
-                                : "text-gray-700 hover:bg-gray-100"
+                        className={`w-9 h-9 text-sm font-semibold rounded-xl transition ${pageNum === page
+                            ? "bg-primary text-text-inverse shadow-sm"
+                            : "text-foreground bg-card-bg hover:bg-background border border-card-border"
                             }`}
                     >
                         {pageNum}
@@ -56,7 +56,7 @@ export default function Pagination({ meta }: PaginationProps) {
             <button
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page >= totalPages}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 text-sm font-semibold rounded-xl border border-card-border bg-card-bg text-foreground hover:bg-background disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
                 Next
             </button>

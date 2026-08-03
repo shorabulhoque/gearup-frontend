@@ -14,22 +14,21 @@ export function ThemeToggle() {
     }, []);
 
     const toggleTheme = () => {
-        const nextTheme = theme === "dark" ? "light" : "dark"
+        const nextTheme = theme === "dark" ? "light" : "dark";
 
         if (nextTheme === "dark") {
             document.documentElement.classList.add("dark");
-            localStorage.setItem("theme", "dark")
+            localStorage.setItem("theme", "dark");
         } else {
-            document.documentElement.classList.remove("dark")
-            localStorage.setItem("theme", "light")
-        };
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+        }
 
         setTheme(nextTheme);
     };
 
-    // Placeholder To prevent Hydration Mismatch and Layout Shift
     if (!mounted) {
-        return <div className="w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+        return <div className="w-9 h-9 rounded-lg bg-card-bg border border-card-border animate-pulse" />;
     }
 
     return (
@@ -37,10 +36,10 @@ export function ThemeToggle() {
             onClick={toggleTheme}
             type="button"
             aria-label="Toggle Theme"
-            className="p-2 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 rounded-lg border border-card-border bg-card-bg text-foreground shadow-sm hover:border-primary/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary"
         >
             {theme === "dark" ? (
-                /* Sun Icon for Dark Mode (click to switch to Light) */
+                /* Sun Icon */
                 <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                         strokeLinecap="round"
@@ -50,8 +49,8 @@ export function ThemeToggle() {
                     />
                 </svg>
             ) : (
-                /* Moon Icon for Light Mode (click to switch to Dark) */
-                <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                /* Moon Icon */
+                <svg className="w-5 h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -61,5 +60,5 @@ export function ThemeToggle() {
                 </svg>
             )}
         </button>
-    )
+    );
 }

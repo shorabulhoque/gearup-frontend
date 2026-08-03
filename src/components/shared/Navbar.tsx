@@ -24,31 +24,20 @@ export default function Navbar({ user }: NavbarProps) {
         { name: "Contact", href: "/contact" },
     ];
 
-    const getDashboardPath = (role?: string) => {
-        switch (role) {
-            case "ADMIN":
-                return "/dashboard/admin";
-            case "PROVIDER":
-                return "/dashboard/provider";
-            default:
-                return "/dashboard/customer";
-        }
-    };
-
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/80 transition-colors">
+        <header className="sticky top-0 z-50 w-full border-b border-card-border bg-background/80 backdrop-blur-md transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Brand Logo */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="flex items-center gap-2">
-                            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
+                            <span className="text-2xl font-extrabold text-primary tracking-tight">
                                 GearUp
                             </span>
                         </Link>
                     </div>
 
-                    {/* Desktop Navigation Links */}
+                    {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-8">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;
@@ -57,8 +46,8 @@ export default function Navbar({ user }: NavbarProps) {
                                     key={link.href}
                                     href={link.href}
                                     className={`text-sm font-medium transition-colors ${isActive
-                                        ? "text-blue-600 dark:text-blue-400 font-semibold"
-                                        : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                                            ? "text-primary font-bold"
+                                            : "text-text-muted hover:text-foreground"
                                         }`}
                                 >
                                     {link.name}
@@ -67,7 +56,7 @@ export default function Navbar({ user }: NavbarProps) {
                         })}
                     </nav>
 
-                    {/* CTA / Auth Area (Desktop) */}
+                    {/* Desktop CTA & Auth */}
                     <div className="hidden md:flex items-center gap-4">
                         <ThemeToggle />
                         {user ? (
@@ -76,13 +65,13 @@ export default function Navbar({ user }: NavbarProps) {
                             <>
                                 <Link
                                     href="/login"
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                                    className="px-4 py-2 text-sm font-medium text-text-muted hover:text-foreground transition-colors"
                                 >
                                     Log in
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all dark:bg-blue-500 dark:hover:bg-blue-600"
+                                    className="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-xl shadow-md shadow-primary/20 transition-all"
                                 >
                                     Sign up
                                 </Link>
@@ -90,13 +79,13 @@ export default function Navbar({ user }: NavbarProps) {
                         )}
                     </div>
 
-                    {/* Mobile Controls (Theme Toggle & Hamburger) */}
+                    {/* Mobile Controls */}
                     <div className="flex md:hidden items-center gap-2">
                         <ThemeToggle />
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             type="button"
-                            className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                            className="p-2 rounded-lg text-text-muted hover:text-foreground hover:bg-card-bg transition-colors"
                             aria-controls="mobile-menu"
                             aria-expanded={isMobileMenuOpen}
                         >
@@ -117,7 +106,7 @@ export default function Navbar({ user }: NavbarProps) {
 
             {/* Mobile Dropdown Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 px-4 pt-2 pb-4 space-y-3">
+                <div id="mobile-menu" className="md:hidden border-b border-card-border bg-background px-4 pt-2 pb-4 space-y-3">
                     <div className="flex flex-col space-y-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;
@@ -126,9 +115,9 @@ export default function Navbar({ user }: NavbarProps) {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
-                                        ? "bg-blue-50 text-blue-600 dark:bg-gray-800 dark:text-blue-400 font-semibold"
-                                        : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                                    className={`px-3 py-2 rounded-lg text-base font-medium transition-colors ${isActive
+                                            ? "bg-primary/10 text-primary font-bold"
+                                            : "text-foreground hover:bg-card-bg"
                                         }`}
                                 >
                                     {link.name}
@@ -137,36 +126,36 @@ export default function Navbar({ user }: NavbarProps) {
                         })}
                     </div>
 
-                    <div className="pt-3 border-t border-gray-100 dark:border-gray-800">
+                    <div className="pt-3 border-t border-card-border">
                         {user ? (
                             <div className="space-y-2">
-                                <div className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-between">
+                                <div className="px-3 py-2 rounded-xl bg-card-bg border border-card-border flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                                        <p className="text-sm font-semibold text-foreground">{user.name}</p>
+                                        <p className="text-xs text-text-muted">{user.email}</p>
                                     </div>
-                                    <span className="text-[10px] font-bold text-blue-700 bg-blue-50 dark:bg-blue-950 dark:text-blue-300 px-2 py-0.5 rounded-full uppercase">
+                                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase border border-primary/20">
                                         {user.role}
                                     </span>
                                 </div>
                                 <Link
-                                    href={getDashboardPath(user.role)}
+                                    href="/dashboard"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all"
+                                    className="block w-full text-center px-4 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-xl shadow-md shadow-primary/20 transition-all"
                                 >
                                     Dashboard
                                 </Link>
                                 <Link
-                                    href="/profile"
+                                    href="/dashboard/profile"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="block w-full text-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                    className="block w-full text-center px-4 py-2 text-sm font-medium text-foreground hover:bg-card-bg rounded-xl transition-colors"
                                 >
                                     Profile
                                 </Link>
                                 <form action={logoutUserAction}>
                                     <button
                                         type="submit"
-                                        className="w-full text-center px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                                        className="w-full text-center px-4 py-2 text-sm font-medium text-danger hover:bg-danger/10 rounded-xl transition-colors"
                                     >
                                         Logout
                                     </button>
@@ -177,14 +166,14 @@ export default function Navbar({ user }: NavbarProps) {
                                 <Link
                                     href="/login"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                    className="w-full text-center px-4 py-2 text-sm font-medium text-foreground hover:bg-card-bg rounded-xl transition-colors border border-card-border"
                                 >
                                     Log in
                                 </Link>
                                 <Link
                                     href="/register"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all"
+                                    className="w-full text-center px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-xl shadow-md shadow-primary/20 transition-all"
                                 >
                                     Sign up
                                 </Link>

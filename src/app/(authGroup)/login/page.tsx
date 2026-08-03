@@ -9,7 +9,7 @@ export default function LoginPage() {
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                     Welcome Back!
                 </h1>
-                <p className="text-xs sm:text-sm opacity-70">
+                <p className="text-xs sm:text-sm text-text-muted">
                     Enter your credentials to access your account
                 </p>
             </div>
@@ -18,11 +18,11 @@ export default function LoginPage() {
             <LoginForm />
 
             {/* Footer Links */}
-            <p className="text-center text-xs sm:text-sm opacity-80 pt-2">
+            <p className="text-center text-xs sm:text-sm text-text-muted pt-2">
                 Don&apos;t have an account?{" "}
                 <Link
                     href="/register"
-                    className="text-primary font-bold hover:underline ml-1"
+                    className="text-primary font-bold hover:underline ml-1 transition-colors"
                 >
                     Create an account
                 </Link>

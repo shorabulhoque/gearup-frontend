@@ -1,55 +1,87 @@
 @import "tailwindcss";
 
 :root {
+  /* --- 1. Base / Layout --- */
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Custom Brand Colors (Light Mode Defaults) */
-  --primary: #10b981;
-  /* Emerald Green */
-  --primary-hover: #059669;
-  --accent: #3b82f6;
-  /* Blue Accent */
+  /* --- 2. Surface & Container Colors --- */
   --card-bg: #f9fafb;
-  /* Light Gray Card */
   --card-border: #e5e7eb;
+  --popover-bg: #ffffff;
+  --popover-border: #f3f4f6;
+
+  /* --- 3. Brand & Interactive Colors --- */
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --secondary: #6b7280;
+  --secondary-hover: #4b5563;
+  --accent: #3b82f6;
+
+  /* --- 4. Feedback & Status Colors --- */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #06b6d4;
+
+  /* --- 5. Text States --- */
+  --text-muted: #6b7280;
+  --text-inverse: #ffffff;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Dark Mode Overrides */
 .dark {
+  /* --- 1. Base / Layout --- */
   --background: #0a0a0a;
   --foreground: #ededed;
 
-  /* Custom Brand Colors for Dark Mode */
-  --primary: #059669;
-  /* Darker Emerald */
-  --primary-hover: #10b981;
-  --accent: #60a5fa;
-  /* Lighter Blue Accent */
+  /* --- 2. Surface & Container Colors --- */
   --card-bg: #18181b;
-  /* Dark Card */
   --card-border: #27272a;
+  --popover-bg: #18181b;
+  --popover-border: #27272a;
+
+  /* --- 3. Brand & Interactive Colors --- */
+  --primary: #059669;
+  --primary-hover: #10b981;
+  --secondary: #9ca3af;
+  --secondary-hover: #d1d5db;
+  --accent: #60a5fa;
+
+  /* --- 4. Feedback & Status Colors --- */
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #0891b2;
+
+  /* --- 5. Text States --- */
+  --text-muted: #9ca3af;
+  --text-inverse: #09090b;
 }
 
-/* Register variables in Tailwind v4 Theme Engine */
+/* Map variables into Tailwind v4 Theme Engine */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 
-  /* 👇 Custom Color Utility Class Mapping */
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-accent: var(--accent);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-}
+  --color-popover-bg: var(--popover-bg);
+  --color-popover-border: var(--popover-border);
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-accent: var(--accent);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
 }

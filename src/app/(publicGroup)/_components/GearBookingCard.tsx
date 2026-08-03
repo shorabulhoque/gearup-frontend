@@ -9,17 +9,19 @@ import { IUserData } from "@/types/user.types";
 interface GearBookingCardProps {
     gear: IGearItem;
     currentUser: IUserData | null;
-};
+}
 
 export default function GearBookingCard({ gear, currentUser }: GearBookingCardProps) {
     const router = useRouter();
     const pathname = usePathname();
 
-    const todayStr = new Date().toISOString().split("T")[0];
-    const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const [startDate, setStartDate] = useState(() => new Date().toISOString().split("T")[0]);
+    const [endDate, setEndDate] = useState(() => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return tomorrow.toISOString().split("T")[0];
+    });
 
-    const [startDate, setStartDate] = useState(todayStr);
-    const [endDate, setEndDate] = useState(tomorrowStr);
     const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
@@ -53,17 +55,17 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
             const redirectUrl = encodeURIComponent(pathname);
             router.push(`/login?redirect=${redirectUrl}`);
             return;
-        };
+        }
 
         if (!isCustomer) {
             setErrorMsg("Only customers are allowed to place rental orders.");
             return;
-        };
+        }
 
         if (new Date(startDate) >= new Date(endDate)) {
             setErrorMsg("End date must be after start date.");
             return;
-        };
+        }
 
         setLoading(true);
 
@@ -84,27 +86,27 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
         if (res.success) {
             setSuccessMsg("Rental order placed successfully!");
             setTimeout(() => {
-                router.push("/dashboard/customer/rentals");
+                router.push("/dashboard/my-rentals");
             }, 1500);
         } else {
             setErrorMsg(res.message || "Failed to place rental order.");
-        };
+        }
     };
 
     return (
-        <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white sticky top-24">
+        <div className="border border-card-border rounded-2xl p-6 shadow-md bg-card-bg sticky top-24 transition-colors">
             {/* Price and stock status */}
-            <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-gray-100">
+            <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-card-border">
                 <div>
-                    <span className="text-3xl font-extrabold text-gray-900">
+                    <span className="text-3xl font-extrabold text-foreground">
                         CHF {gear.pricePerDay}
                     </span>
-                    <span className="text-sm text-gray-500 font-medium"> / day</span>
+                    <span className="text-sm text-text-muted font-medium"> / day</span>
                 </div>
                 <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full ${!isOutOfStock
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
+                    className={`text-xs font-semibold px-3 py-1 rounded-full border ${!isOutOfStock
+                        ? "bg-success/10 text-success border-success/20"
+                        : "bg-danger/10 text-danger border-danger/20"
                         }`}
                 >
                     {!isOutOfStock ? `In Stock (${gear.stock})` : "Out of Stock"}
@@ -113,12 +115,12 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
 
             {/* Alert message */}
             {errorMsg && (
-                <div className="mb-4 p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
+                <div className="mb-4 p-3 text-sm text-danger bg-danger/10 rounded-xl border border-danger/20">
                     {errorMsg}
                 </div>
             )}
             {successMsg && (
-                <div className="mb-4 p-3 text-sm text-green-700 bg-green-50 rounded-lg border border-green-200">
+                <div className="mb-4 p-3 text-sm text-success bg-success/10 rounded-xl border border-success/20">
                     {successMsg}
                 </div>
             )}
@@ -127,19 +129,19 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
                 {/* Date selector */}
                 <div className="grid grid-cols-2 gap-3">
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1">
+                        <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">
                             Start Date
                         </label>
                         <input
                             type="date"
-                            min={todayStr}
+                            min={startDate}
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-card-border text-foreground rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition"
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1">
+                        <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">
                             End Date
                         </label>
                         <input
@@ -147,14 +149,14 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
                             min={startDate}
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-card-border text-foreground rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none transition"
                         />
                     </div>
                 </div>
 
-                {/* Quantity selector (Max limit: gear.stock) */}
+                {/* Quantity selector */}
                 <div>
-                    <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1">
+                    <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">
                         Quantity (Max {gear.stock})
                     </label>
                     <div className="flex items-center space-x-3">
@@ -162,18 +164,18 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
                             type="button"
                             onClick={() => handleQuantityChange(-1)}
                             disabled={quantity <= 1 || isOutOfStock}
-                            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-40"
+                            className="w-10 h-10 rounded-xl border border-card-border bg-background flex items-center justify-center font-bold text-foreground hover:bg-card-border disabled:opacity-40 transition"
                         >
                             -
                         </button>
-                        <span className="text-base font-semibold text-gray-800 w-8 text-center">
+                        <span className="text-base font-semibold text-foreground w-8 text-center">
                             {quantity}
                         </span>
                         <button
                             type="button"
                             onClick={() => handleQuantityChange(1)}
                             disabled={quantity >= gear.stock || isOutOfStock}
-                            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-40"
+                            className="w-10 h-10 rounded-xl border border-card-border bg-background flex items-center justify-center font-bold text-foreground hover:bg-card-border disabled:opacity-40 transition"
                         >
                             +
                         </button>
@@ -181,24 +183,24 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
                 </div>
 
                 {/* Price calculation */}
-                <div className="bg-gray-50 rounded-xl p-4 mt-4 space-y-2 text-sm text-gray-600">
+                <div className="bg-background rounded-xl p-4 mt-4 space-y-2 text-sm text-text-muted border border-card-border">
                     <div className="flex justify-between">
                         <span>
                             CHF {gear.pricePerDay} x {rentalDays} {rentalDays > 1 ? "days" : "day"} (x{quantity})
                         </span>
-                        <span className="font-semibold text-gray-800">CHF {totalPrice}</span>
+                        <span className="font-semibold text-foreground">CHF {totalPrice}</span>
                     </div>
-                    <div className="flex justify-between pt-2 border-t border-gray-200 text-base font-bold text-gray-900">
+                    <div className="flex justify-between pt-2 border-t border-card-border text-base font-bold text-foreground">
                         <span>Total Rent Amount</span>
-                        <span>CHF {totalPrice}</span>
+                        <span className="text-primary">CHF {totalPrice}</span>
                     </div>
                 </div>
 
-                {/* Role and stock condition of the submit action button */}
+                {/* Submit action button */}
                 {isLoggedIn && !isCustomer ? (
                     <button
                         disabled
-                        className="w-full mt-4 py-3 bg-gray-200 text-gray-500 font-semibold rounded-xl cursor-not-allowed border border-gray-300"
+                        className="w-full mt-4 py-3 bg-card-border text-text-muted font-semibold rounded-xl cursor-not-allowed border border-card-border"
                     >
                         Only Customers Can Rent
                     </button>
@@ -206,7 +208,7 @@ export default function GearBookingCard({ gear, currentUser }: GearBookingCardPr
                     <button
                         onClick={handleRentalSubmit}
                         disabled={isOutOfStock || loading}
-                        className="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full mt-4 py-3 bg-primary hover:bg-primary-hover text-text-inverse font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading
                             ? "Placing Order..."

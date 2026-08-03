@@ -2,49 +2,66 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtUtils } from "@/utils/jwt";
 
-const ROLE_DASHBOARDS: Record<string, string> = {
-    ADMIN: "/dashboard/admin",
-    PROVIDER: "/dashboard/provider",
-    CUSTOMER: "/dashboard/customer",
-};
+// 1. Define sub-route access rules for each role
+const PROVIDER_ROUTES = [
+    "/dashboard/manage-gears",
+    "/dashboard/create-gears",
+    "/dashboard/provider-rentals",
+];
+
+const CUSTOMER_ROUTES = [
+    "/dashboard/my-rentals",
+];
+
+const ADMIN_ROUTES = [
+    "/dashboard/all-users",
+    "/dashboard/manage-categories",
+];
 
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    console.log(pathname);
     const accessToken = request.cookies.get("accessToken")?.value;
     const decoded = accessToken ? jwtUtils.decodeToken(accessToken) : null;
-    const userRole = decoded?.role;
+    const userRole = decoded?.role; // e.g. "CUSTOMER", "PROVIDER", "ADMIN"
 
     const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
     const isDashboardRoute = pathname.startsWith("/dashboard");
 
+    // Redirect logged-in users away from auth routes
     if (isAuthRoute && accessToken && userRole) {
-        const targetDashboard = ROLE_DASHBOARDS[userRole] || "/dashboard/customer";
-        return NextResponse.redirect(new URL(targetDashboard, request.url));
-    };
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
 
+    // Redirect unauthenticated users away from dashboard routes
     if (isDashboardRoute && !accessToken) {
         const loginUrl = new URL("/login", request.url);
         loginUrl.searchParams.set("redirectTo", pathname);
         return NextResponse.redirect(loginUrl);
-    };
+    }
 
+    // Role Protection Logic for Dashboard Sub-Routes
     if (isDashboardRoute && accessToken && userRole) {
-        if (pathname.startsWith("/dashboard/admin") && userRole !== "ADMIN") {
-            return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        };
+        // Prevent Non-Providers from accessing Provider routes
+        const isTryingProviderRoute = PROVIDER_ROUTES.some((route) => pathname.startsWith(route));
+        if (isTryingProviderRoute && userRole !== "PROVIDER" && userRole !== "ADMIN") {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
 
-        if (pathname.startsWith("/dashboard/provider") && userRole !== "PROVIDER") {
-            return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        };
+        // Prevent Non-Customers from accessing Customer routes
+        const isTryingCustomerRoute = CUSTOMER_ROUTES.some((route) => pathname.startsWith(route));
+        if (isTryingCustomerRoute && userRole !== "CUSTOMER" && userRole !== "ADMIN") {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
 
-        if (pathname.startsWith("/dashboard/customer") && userRole !== "CUSTOMER") {
-            return NextResponse.redirect(new URL(ROLE_DASHBOARDS[userRole] || "/login", request.url));
-        };
-    };
+        // Prevent Non-Admins from accessing Admin routes
+        const isTryingAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route));
+        if (isTryingAdminRoute && userRole !== "ADMIN") {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
+    }
 
     return NextResponse.next();
-};
+}
 
 export const config = {
     matcher: [

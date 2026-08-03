@@ -31,7 +31,7 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
       </head>
-      <body className="antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen">
+      <body className="antialiased bg-background text-foreground min-h-screen">
         {children}
         <Toaster position="top-right" richColors />
       </body>

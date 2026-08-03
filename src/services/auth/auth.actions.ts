@@ -4,7 +4,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ILoginResponse, IRegisterResponse } from "@/types/auth.types";
-import jwt, { JwtPayload } from "jsonwebtoken";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 
@@ -31,36 +30,34 @@ export async function loginAction(
                 statusCode: res.status,
                 message: data.message || "Invalid email or password",
             };
-        };
+        }
 
         const cookieStore = await cookies();
         cookieStore.set("accessToken", data.data?.accessToken as string, { httpOnly: true, sameSite: "lax" });
         cookieStore.set("refreshToken", data.data?.refreshToken as string, { httpOnly: true, sameSite: "lax" });
 
-        const decodedToken = jwt.decode(data.data?.accessToken as string) as JwtPayload;
-
+        // If a valid local redirect path was provided, use it
         if (redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
             redirect(redirectTo);
-        };
+        }
 
-        if (decodedToken.role === "CUSTOMER") redirect("/dashboard/customer");
-        else if (decodedToken.role === "ADMIN") redirect("/dashboard/admin");
-        else if (decodedToken.role === "PROVIDER") redirect("/dashboard/provider");
+        // Default redirect for all authenticated roles
+        redirect("/dashboard");
 
         return data;
 
     } catch (error: any) {
         if (error.message === "NEXT_REDIRECT" || error?.digest?.startsWith("NEXT_REDIRECT")) {
             throw error;
-        };
+        }
 
         return {
             success: false,
             statusCode: 500,
             message: error.message || "Network connection error",
         };
-    };
-};
+    }
+}
 
 export async function registerAction(
     prevState: IRegisterResponse | null,
@@ -76,7 +73,7 @@ export async function registerAction(
             success: false,
             message: "All fields are required",
         };
-    };
+    }
 
     try {
         const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
@@ -95,7 +92,7 @@ export async function registerAction(
                 message: data.message || "Registration failed. Please try again.",
                 statusCode: res.status,
             };
-        };
+        }
 
         return data;
 
@@ -105,13 +102,13 @@ export async function registerAction(
             statusCode: 500,
             message: error.message || "Network connection error",
         };
-    };
-};
-
+    }
+}
 
 export async function logoutUserAction() {
     const cookieStore = await cookies();
     cookieStore.delete("accessToken");
+    cookieStore.delete("refreshToken");
     cookieStore.delete("userRole");
     redirect("/login");
-};
+}
