@@ -24,17 +24,6 @@ export default function UserDropdown({ user }: UserDropdownProps) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Determine dashboard path based on role
-    const getDashboardLink = () => {
-        switch (user.role) {
-            case "ADMIN":
-                return "/admin/dashboard";
-            case "PROVIDER":
-                return "/provider/dashboard";
-            default:
-                return "/dashboard";
-        }
-    };
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -62,7 +51,7 @@ export default function UserDropdown({ user }: UserDropdownProps) {
                     {/* Navigation Links */}
                     <div className="py-1 text-sm text-gray-700">
                         <Link
-                            href={getDashboardLink()}
+                            href="/dashboard/profile"
                             onClick={() => setIsOpen(false)}
                             className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 transition"
                         >
@@ -70,7 +59,7 @@ export default function UserDropdown({ user }: UserDropdownProps) {
                         </Link>
 
                         <Link
-                            href="/profile"
+                            href="/dashboard/profile"
                             onClick={() => setIsOpen(false)}
                             className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 transition"
                         >

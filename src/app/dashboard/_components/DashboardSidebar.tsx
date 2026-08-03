@@ -10,7 +10,7 @@ interface SidebarProps {
 
 export default function DashboardSidebar({ role, userName }: SidebarProps) {
     const pathname = usePathname();
-
+    console.log(role)
     const navItems = [
         { label: "My Profile", href: "/dashboard/profile" },
 

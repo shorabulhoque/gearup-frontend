@@ -8,7 +8,6 @@ export default async function PublicLayout({
     children: React.ReactNode;
 }) {
     const currentUser = await getCurrentUser();
-    console.log(currentUser, "currentUser");
     return (
         <div className="flex flex-col min-h-screen">
             {/* 2. Pass currentUser as a prop to Navbar */}
