@@ -45,8 +45,8 @@ export default function GearForm({ initialData, onSubmit, isEditMode = false }: 
         const fetchCategories = async () => {
             try {
                 const res = await getAllCategories();
-                if (res?.data) {
-                    setCategories(res.data);
+                if (res) {
+                    setCategories(res);
                 } else if (Array.isArray(res)) {
                     setCategories(res);
                 }
